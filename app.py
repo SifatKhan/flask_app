@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import Schema
 from webargs import fields, validate
@@ -23,6 +23,7 @@ class BatchSchema(Schema):
     email = fields.Email(required=True)
     grade = fields.String(required=True, validate=validate.Length(max=1))
 
+
 #Insertion
 @app.route('/student', methods=['POST'])
 @use_args(BatchSchema,location='json')
@@ -35,6 +36,38 @@ def add_student(kwargs):
     except Exception as e:
         print(e)
         return "Student addtion Failed!"
+
+#Read
+@app.route('/showstudents', methods=['GET'])
+def get_student():
+    students = db.session.query(Batch).all()
+    return render_template('home.html',students=students)
+
+#Update
+@app.route('/updaterecord', methods=['PUT'])
+def update_student():
+    try:
+        stud = db.session.query(Batch).filter(Batch.id==request.json["id"]).first()
+        stud.username = request.json['username']
+        stud.email = request.json['email']
+        stud.grade = request.json['grade']
+        db.session.commit()
+        return 'Student record updated!'
+    except Exception as e:
+        print(e)
+        return 'Student record updation Failed!'
+
+#Delete
+@app.route('/deleterecord',methods=['DELETE'])
+def delete_student():
+    try:
+        stud = db.session.query(Batch).filter(Batch.id == request.json['id']).first()
+        db.session.delete(stud)
+        db.session.commit()
+        return 'Student ' + stud.username + ' is deleted!', 200
+    except Exception as e:
+        print(e)
+        return 'Student record deletion Failed!', 422
 
 if __name__ == '__main__':
     app.run(debug=True)

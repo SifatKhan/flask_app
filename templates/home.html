@@ -1,0 +1,22 @@
+<html>
+<h1>
+    Student Record
+</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Student Name</th>
+        <th>Student Email</th>
+        <th>Grade</th>
+    </tr>
+    {% for std in students %}
+    <tr>
+        <td>{{std.id}}</td>
+        <td>{{std.username}}</td>
+        <td>{{std.email}}</td>
+        <td>{{std.grade}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</html>
