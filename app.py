@@ -16,7 +16,7 @@ class Batch(db.Model):
     grade = db.Column(db.String(1), nullable=False)
 
     def __repr__(self) -> str:
-        return '<User %r>' % self.username
+        return '<User>' + self.username
 
 class BatchSchema(Schema):
     username = fields.String(required=True, validate=validate.Length(min=5,max=50))
